@@ -17,7 +17,7 @@ def ping_pong():
     return jsonify({
       'status': 'success',
       'message': 'pong'
-    })
+      })
 
 
 @pedidos_blueprint.route('/customers', methods=['POST'])
@@ -54,20 +54,20 @@ def get_single_customer(customer_id):
         'message': 'El customer no existe'
     }
     try:
-      customer = Customer.query.filter_by(id=int(customer_id)).first()
-      if not customer:
-          return jsonify(response_object), 404
-      else:
-        response_object = {
-          'status': 'success',
-          'data': {
-            'id': customer.id,
-            'name': customer.name
-          }
-        }
-        return jsonify(response_object), 200
+        customer = Customer.query.filter_by(id=int(customer_id)).first()
+        if not customer:
+            return jsonify(response_object), 404
+        else:
+            response_object = {
+              'status': 'success',
+              'data': {
+                'id': customer.id,
+                'name': customer.name
+              }
+            }
+            return jsonify(response_object), 200
     except ValueError:
-      return jsonify(response_object), 404
+        return jsonify(response_object), 404
 
 
 @pedidos_blueprint.route('/customers', methods=['GET'])

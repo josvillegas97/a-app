@@ -1,17 +1,17 @@
-#services/pedidos/project/__init__.py
+# services/pedidos/project/__init__.py
 
 
-import os  #nuevo
+import os  # nuevo
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 
-#iinstanciando la db
+# instanciando la db
 db = SQLAlchemy()
 
 
-# new 
+# new
 def create_app(script_info=None):
 
     # instanciamos la app
@@ -35,6 +35,3 @@ def create_app(script_info=None):
         return {'app': app, 'db': db}
 
     return app
-
-
-
