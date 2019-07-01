@@ -86,7 +86,7 @@
         <form action="/" method="POST">
           <div class="field">
             <input
-              name="name" class="input"
+              names="names" class="input"
               type="text" placeholder="Ingrese un nombre de cliente" required>
           </div>
           <input
@@ -98,7 +98,7 @@
           {% if customers %}
             <ol>
               {% for customer in customers %}
-                <li>{{customer.name}}</li>
+                <li>{{customer.names}}</li>
               {% endfor %}
             </ol>
           {% else %}

@@ -29,7 +29,7 @@ def add_customer():
     }
     if not post_data:
         return jsonify(response_object), 400
-    name = post_data.get('names')
+    names = post_data.get('names')
     try:
         customer = Customer.query.filter_by(names=names).first()
         if not customer:
@@ -86,11 +86,12 @@ def get_all_customers():
 @pedidos_blueprint.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        name = request.form['names']
-        db.session.add(Customer(names=names))
+        name = request.form['name']
+        db.session.add(Customer(names=name))
         db.session.commit()
     customer = Customer.query.all()
     return render_template('index.html', customers=customer)
+
 
 @pedidos_blueprint.route('/orders/<order_id>', methods=['GET'])
 def get_single_order(order_id):
@@ -116,6 +117,7 @@ def get_single_order(order_id):
     except ValueError:
         return jsonify(response_object), 404
 
+
 @pedidos_blueprint.route('/orders', methods=['GET'])
 def get_all_orders():
     """Obteniendo todos los orders"""
@@ -127,6 +129,7 @@ def get_all_orders():
         }
     }
     return jsonify(response_object), 200
+
 
 @pedidos_blueprint.route('/products/<product_id>', methods=['GET'])
 def get_single_item(product_id):
@@ -151,6 +154,7 @@ def get_single_item(product_id):
     except ValueError:
         return jsonify(response_object), 404
 
+
 @pedidos_blueprint.route('/products', methods=['GET'])
 def get_all_items():
     """Obteniendo todos los items"""
@@ -163,6 +167,7 @@ def get_all_items():
     }
     return jsonify(response_object), 200
 
+
 @pedidos_blueprint.route('/items/<item_id>', methods=['GET'])
 def get_singe_item(item_id):
     """Detalles item"""
@@ -171,7 +176,7 @@ def get_singe_item(item_id):
         'message': 'El item no existe'
     }
     try:
-        item = Item.query.filter_by(id=int(product_id)).first()
+        item = Item.query.filter_by(id=int(item_id)).first()
         if not item:
             return jsonify(response_object), 404
         else:
@@ -187,6 +192,7 @@ def get_singe_item(item_id):
             return jsonify(response_object), 200
     except ValueError:
         return jsonify(response_object), 404
+
 
 @pedidos_blueprint.route('/items', methods=['GET'])
 def get_all_item():

@@ -4,21 +4,16 @@
 import json
 import unittest
 from project import db
-from project.api.models import Customer, Order, Product, Item
+from project.api.models import Customer
 from project.tests.base import BaseTestCase
 
 
-def add_customer(name):
-    customer = Customer(name=name)
+def add_customer(names):
+    customer = Customer(names=names)
     db.session.add(customer)
     db.session.commit()
     return customer
 
-def add_order(id_customer, date):
-    order = Order(id_customer=id_customer, date=date)
-    db.session.add(order)
-    db.session.commit()
-    return order
 
 class TestPedidosService(BaseTestCase):
     """Tests for the Users Service."""
@@ -83,7 +78,7 @@ class TestPedidosService(BaseTestCase):
 
     def test_single_customer(self):
         """Asegurando que obtenga un customer de forma correcta"""
-        customer = add_customer(name="josvillegas")
+        customer = add_customer(names="josvillegas")
         with self.client:
             response = self.client.get(f'/customers/{customer.id}')
             data = json.loads(response.data.decode())
@@ -112,7 +107,9 @@ class TestPedidosService(BaseTestCase):
             self.assertIn('failed', data['status'])
 
     def test_all_customer(self):
-        """ Asegurando de que todos los usuarios se comporten correctamente."""
+        """
+        Asegurando de que todos los usuarios se comporten correctamente
+        """
         add_customer('josvillegas')
         add_customer('toshivillegas')
         with self.client:
@@ -120,19 +117,21 @@ class TestPedidosService(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(data['data']['customer']), 2)
-            self.assertIn('josvillegas', data['data']['customer'][0]['names'])
-            self.assertIn('toshivillegas', data['data']['customer'][1]['names'])
+            self.assertIn(
+                'josvillegas', data['data']['customer'][0]['names'])
+            self.assertIn(
+                'toshivillegas', data['data']['customer'][1]['names'])
             self.assertIn('success', data['status'])
 
-    def test_main_no_users(self):
+    def test_main_no_customer(self):
         """ La ruta principal funciona? con clientes añadidos a la db."""
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Todos los clientes', response.data)
         self.assertIn(b'<p>No hay clientes!</p>', response.data)
 
-    def test_main_with_users(self):
-        """ La ruta principal funciona? cuando un usuario es add ."""
+    def test_main_with_customer(self):
+        """La ruta principal funciona? cuando un usuario es add ."""
         add_customer('josvillegas')
         add_customer('toshivillegas')
         with self.client:
@@ -143,7 +142,7 @@ class TestPedidosService(BaseTestCase):
             self.assertIn(b'josvillegas', response.data)
             self.assertIn(b'toshivillegas', response.data)
 
-    def test_main_add_users(self):
+    def test_main_add_customer(self):
         """ Un nuevo cliente puede add a la db mediante un POST request? ."""
         with self.client:
             response = self.client.post(
@@ -156,7 +155,6 @@ class TestPedidosService(BaseTestCase):
             self.assertNotIn(b'<p>No hay clientes!</p>', response.data)
             self.assertIn(b'tofoshivillegas', response.data)
 
-    
 
 if __name__ == '__main__':
     unittest.main()
