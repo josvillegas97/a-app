@@ -4,7 +4,7 @@
 import json
 import unittest
 from project import db
-from project.api.models import Customer
+from project.api.models import Customer, Order, Product, Item
 from project.tests.base import BaseTestCase
 
 
@@ -14,6 +14,11 @@ def add_customer(name):
     db.session.commit()
     return customer
 
+def add_order(id_customer, date):
+    order = Order(id_customer=id_customer, date=date)
+    db.session.add(order)
+    db.session.commit()
+    return order
 
 class TestPedidosService(BaseTestCase):
     """Tests for the Users Service."""
@@ -32,7 +37,7 @@ class TestPedidosService(BaseTestCase):
             response = self.client.post(
                 '/customers',
                 data=json.dumps({
-                    'name': 'josvillegas'
+                    'names': 'josvillegas'
                 }),
                 content_type='application/json',
             )
@@ -60,14 +65,14 @@ class TestPedidosService(BaseTestCase):
             response = self.client.post(
                 '/customers',
                 data=json.dumps({
-                    'name': 'josvillegas'
+                    'names': 'josvillegas'
                 }),
                 content_type='application/json',
             )
             response = self.client.post(
                 '/customers',
                 data=json.dumps({
-                    'name': 'josvillegas'
+                    'names': 'josvillegas'
                 }),
                 content_type='application/json',
             )
@@ -83,7 +88,7 @@ class TestPedidosService(BaseTestCase):
             response = self.client.get(f'/customers/{customer.id}')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
-            self.assertIn('josvillegas', data['data']['name'])
+            self.assertIn('josvillegas', data['data']['names'])
             self.assertIn('success', data['status'])
 
     def test_single_customer_no_id(self):
@@ -115,8 +120,8 @@ class TestPedidosService(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(data['data']['customer']), 2)
-            self.assertIn('josvillegas', data['data']['customer'][0]['name'])
-            self.assertIn('toshivillegas', data['data']['customer'][1]['name'])
+            self.assertIn('josvillegas', data['data']['customer'][0]['names'])
+            self.assertIn('toshivillegas', data['data']['customer'][1]['names'])
             self.assertIn('success', data['status'])
 
     def test_main_no_users(self):
@@ -151,6 +156,7 @@ class TestPedidosService(BaseTestCase):
             self.assertNotIn(b'<p>No hay clientes!</p>', response.data)
             self.assertIn(b'tofoshivillegas', response.data)
 
+    
 
 if __name__ == '__main__':
     unittest.main()

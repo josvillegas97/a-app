@@ -42,8 +42,14 @@ def test():
 @cli.command('seed_db')
 def seed_db():
     """Sembrado en la base de datos"""
-    db.session.add(Customer(name='josvillegas'))
-    db.session.add(Customer(name='toshivillegas'))
+    db.session.add(Customer(names='josvillegas'))
+    db.session.add(Customer(names='toshivillegas'))
+    db.session.add(Order(customer_id='1', date='01/09/09'))
+    db.session.add(Order(customer_id='2', date='01/09/09'))
+    db.session.add(Product(name='gaseosa'))
+    db.session.add(Product(name='helado'))
+    db.session.add(Item(order_id='1',product_id='1', quantity='20'))
+    db.session.add(Item(order_id='2',product_id='2', quantity='21'))
     db.session.commit()
 
 
